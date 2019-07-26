@@ -1,26 +1,18 @@
 const router = require("express").Router();
+const mongoose = require("mongoose");
 const authMiddleware = require("../middlewares/auth");
 const userController = require("../controllers/userController");
+
+// Carrega o model de Usuário
+require("../models/user");
+
+const User = mongoose.model("User");
 
 /* rota de login */
 router.post("/login", userController.userLogin);
 
 /* rota de cadastro */
 router.post("/signup", userController.userSignup);
-
-router.use(authMiddleware);
-
-router.get("/me", async (req, res) => {
-  try {
-    const { userId } = req;
-
-    const user = await User.findById(userId);
-
-    return res.json({ user });
-  } catch (err) {
-    return res.status(400).json({ error: "Can't get user information" });
-  }
-});
 
 /* rota de remoção de conta */
 router.delete("/:userid", userController.userLogin);

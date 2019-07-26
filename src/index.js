@@ -1,20 +1,11 @@
 const app = require("express")();
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/userRoutes");
 
-// Conecta no MongoDB
-mongoose.connect(
-  "mongodb+srv://admin:" +
-    process.env.MONGO_ATLAS_PW +
-    "@cluster0-jqsht.mongodb.net/test?retryWrites=true&w=majority"
-);
-
-// Carrega o model de Usuário
-require("./database/models/user");
-
 app.use(bodyParser.json());
+
+require( "./config/mongoose" )( app );
 
 app.use("/user", userRoutes);
 
