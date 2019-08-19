@@ -1,5 +1,6 @@
 const app = require("express")();
 const bodyParser = require("body-parser");
+const morgan = require("morgan");
 
 const userRoutes = require("./routes/userRoutes");
 
@@ -7,6 +8,7 @@ app.use(bodyParser.json());
 
 require( "./config/mongoose" )( app );
 
+app.use(morgan("dev"));
 app.use("/user", userRoutes);
 
 /*  tratando caminho inexistente */

@@ -37,19 +37,33 @@ exports.userLogin = async (req, res, next) => {
     result:
 */
 exports.userSignup = async (req, res, next) => {
-  const { email, username } = req.body;
-
-  try {
-    if (await User.findOne({ email })) {
-      return res.status(400).json({ error: "User already exists" });
-    }
-
-    const user = await User.create(req.body);
-
-    return res.json({ user });
-  } catch (err) {
-    return res.status(400).json({ error: "User registration failed" });
+  if (await User.findOne({email: req.body.email})) {
+    return res.status(409).json({ error: "Usuário já existente" });
   }
+  const user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password
+  });
+  user
+    .save()
+    .then(result => {
+      console.log(result);
+      res.status(201).json({
+        message: "Conta criada com sucesso",
+        createdUser: {
+          name: result.name,
+          email: req.body.email,
+          _id: result._id
+        }
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 };
 
 /* controle de remoção de conta
