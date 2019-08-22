@@ -24,8 +24,7 @@ exports.userLogin = async (req, res, next) => {
     }
 
     return res.json({
-      user,
-      token: user.generateToken()
+      token: user.generateToken({ ...user })
     });
   } catch (err) {
     return res.status(400).json({ error: "User authentication failed" });

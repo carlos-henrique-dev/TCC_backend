@@ -34,8 +34,11 @@ UserSchema.methods = {
     return bcrypt.compare(hash, this.password);
   },
 
-  generateToken() {
-    return jwt.sign({ id: this.id }, "secret", {
+  generateToken(user) {
+    return jwt.sign({
+      name: user._doc.name,
+      email: user._doc.email
+    }, "secret", {
       expiresIn: 86400
     });
   }
