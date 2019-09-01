@@ -5,10 +5,13 @@ const mongoose = require("mongoose");
 
 module.exports = function(app) {
   // Conecta no MongoDB
-  mongoose.connect(config.mongoUrl, {
-    useNewUrlParser: true,
-    useCreateIndex: true
-  });
+  mongoose.connect(
+    /* config.mongoUrl */ "mongodb://localhost:27017/testimage",
+    {
+      useNewUrlParser: true,
+      useCreateIndex: true
+    }
+  );
   /* mongoose.Promise = global.Promise;
 
   process.on("SIGINT", cleanup);
