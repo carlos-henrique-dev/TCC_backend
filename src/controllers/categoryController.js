@@ -38,43 +38,57 @@ exports.getCategory = (req, res, next) => {
 };
 
 exports.postCategory = (req, res, next) => {
-  const category = new Category({
-    name: req.body.name
-  });
-
-  category
-    .save()
-    .then(result => {
-      res.status(200).json({
-        message: "Success",
-        result
-      });
-    })
-    .catch(error => {
-      res.status(500).json({
-        message: "Couldn't add a new category",
-        result: {}
-      });
+  if (req.body.name !== "") {
+    const category = new Category({
+      name: req.body.name
     });
+
+    category
+      .save()
+      .then(result => {
+        res.status(200).json({
+          message: "Success",
+          result
+        });
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: "Couldn't add a new category",
+          result: {}
+        });
+      });
+  } else {
+    res.status(400).json({
+      message: "Dados inválidos",
+      result: {}
+    });
+  }
 };
 
 exports.updateCategory = (req, res, next) => {
-  const id = req.params.categoryId;
+  if (req.body.name !== "") {
+    const id = req.params.categoryId;
 
-  Category.updateOne({ _id: id }, { $set: { name: req.body.name } })
-    .exec()
-    .then(result => {
-      res.status(200).json({
-        message: "Success!",
-        result
+    Category.updateOne({ _id: id }, { $set: { name: req.body.name } })
+      .exec()
+      .then(result => {
+        res.status(200).json({
+          message: "Success!",
+          result
+        });
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: "Couldn't update the category",
+          error
+        });
       });
-    })
-    .catch(error => {
-      res.status(500).json({
-        message: "Couldn't update the category",
-        error
-      });
+  } else {
+    res.status(400).json({
+      message: "Dados inválidos",
+      result: {}
     });
+  }
 };
 
 exports.deleteCategory = (req, res, next) => {

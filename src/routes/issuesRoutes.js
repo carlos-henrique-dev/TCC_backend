@@ -9,6 +9,7 @@ const issuesController = require("../controllers/issuesController");
 /* rotas principais dos problemas */
 router.get("/", issuesController.getIssues);
 router.get("/:issueId", issuesController.getIssue);
+
 router.post(
   "/",
   multer(multerConfig).single("file"),
@@ -19,10 +20,10 @@ router.delete("/:issueId", issuesController.deleteIssue);
 
 /* rotas para os comentários */
 router.post("/comments/:issueId", issuesController.addComment);
-router.delete("comments/:issueId/", issuesController.deleteComment);
+router.delete("/comments/:issueId/", issuesController.deleteComment);
 
 /* rotas para os apoios */
-router.post("/support/add/:issueId", issuesController.addSupport);
-router.post("/support/remove/:issueId/", issuesController.removeSupport);
+router.post("/support/add/:issueId", issuesController.addVote);
+router.post("/support/remove/:issueId/", issuesController.removeVote);
 
 module.exports = router;

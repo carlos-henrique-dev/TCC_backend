@@ -1,6 +1,10 @@
 const Image = require("../models/imagesModel");
 const Issue = require("../models/issuesModel");
 
+const fs = require("fs");
+const path = require("path");
+const { promisify } = require("util");
+
 exports.getIssues = async (req, res, next) => {
   Issue.find()
     .exec()
@@ -40,36 +44,62 @@ exports.getIssue = (req, res, next) => {
 };
 
 exports.postIssue = async (req, res, next) => {
-  const { originalname: name, size, key, location: url = "" } = req.file;
+  if (req.file !== undefined) {
+    const { originalname: name, size, key, location: url = "" } = req.file;
 
-  const image = await Image.create({
-    name,
-    size,
-    key,
-    url
-  });
+    const image = await Image.create({ name, size, key, url });
 
-  const issue = new Issue({
-    category: req.body.category,
-    authorId: req.body.authorId,
-    authorName: req.body.authorName,
-    images: image._id,
-    address: req.body.address,
-    longitude: req.body.longitude,
-    latitude: req.body.latitude,
-    description: req.body.description
-  });
+    const {
+      category,
+      authorId,
+      authorName,
+      address,
+      longitude,
+      latitude,
+      description
+    } = req.body;
 
-  issue
-    .save()
-    .then(result => {
-      res.status(200).json(result);
-    })
-    .catch(error => {
-      res.status(500).json({
-        error: "erro ao adicionar issue" + error
+    if (
+      category === undefined ||
+      authorId === undefined ||
+      authorName === undefined ||
+      address === undefined ||
+      longitude === undefined ||
+      latitude === undefined ||
+      description === undefined
+    ) {
+      await image.remove();
+      res.status(400).json({
+        message: "Dados inválidos"
       });
+    } else {
+      const issue = new Issue({
+        category,
+        authorId,
+        authorName,
+        images: image._id,
+        address,
+        longitude,
+        latitude,
+        description
+      });
+
+      issue
+        .save()
+        .then(result => {
+          res.status(200).json(result);
+        })
+        .catch(error => {
+          res.status(500).json({
+            error: "erro ao adicionar issue" + error
+          });
+        });
+    }
+  } else {
+    res.status(400).json({
+      message: "Arquivo inválidos"
     });
+  }
 };
 
 /* 
@@ -82,30 +112,43 @@ atualiza a issue, a requisição deve seguir este modelo:
 ]
 */
 exports.updateIssue = (req, res, next) => {
-  const updateOperations = {};
-  for (const operations of req.body) {
-    updateOperations[operations.propName] = operations.value;
-  }
-
-  Issue.updateOne({ _id: req.params.issueId }, { $set: updateOperations })
-    .exec()
-    .then(updatedIssue => {
-      if (updatedIssue.nModified !== 0) {
-        res.status(200).json({
-          message: "Success",
-          updatedIssue
-        });
-      } else {
-        res.status(400).json({
-          message: "Invalid ID"
-        });
+  if (req.body.length > 0) {
+    const updateOperations = {};
+    for (const operations of req.body) {
+      if (
+        operations.propName !== "" &&
+        operations.propName !== undefined &&
+        operations.value !== "" &&
+        operations.value !== undefined
+      ) {
+        updateOperations[operations.propName] = operations.value;
       }
-    })
-    .catch(error => {
-      res.status(500).json({
-        error: "erro ao adicionar issue" + error
+    }
+
+    Issue.updateOne({ _id: req.params.issueId }, { $set: updateOperations })
+      .exec()
+      .then(updatedIssue => {
+        if (updatedIssue.nModified !== 0) {
+          res.status(200).json({
+            message: "Success",
+            updatedIssue
+          });
+        } else {
+          res.status(400).json({
+            message: "Invalid ID"
+          });
+        }
+      })
+      .catch(error => {
+        res.status(500).json({
+          error: "erro ao adicionar issue" + error
+        });
       });
+  } else {
+    res.status(400).json({
+      message: "Nenhum campo para atualizar"
     });
+  }
 };
 
 exports.deleteIssue = async (req, res, next) => {
@@ -131,42 +174,105 @@ exports.deleteIssue = async (req, res, next) => {
     });
 };
 
+/* controladores de comentários */
+
 exports.addComment = (req, res, next) => {
-  res.status(200).json({
-    message: "Adicionando comentário"
-  });
+  const { userId, userName, comment } = req.body;
+
+  if (
+    userId !== "" &&
+    userId !== undefined &&
+    userName !== "" &&
+    userName !== undefined &&
+    comment !== "" &&
+    comment !== undefined
+  ) {
+    Issue.updateOne(
+      { _id: req.params.issueId },
+      { $push: { comments: { userId, userName, comment } } }
+    )
+      .exec()
+      .then(updatedIssue => {
+        if (updatedIssue.nModified !== 0) {
+          res.status(200).json({
+            message: "Success",
+            updatedIssue
+          });
+        } else {
+          res.status(400).json({ message: "Invalid ID" });
+        }
+      })
+      .catch(error => {
+        res.status(500).json({
+          error: "erro ao adicionar comentário" + error
+        });
+      });
+  } else {
+    res.status(400).json({
+      message: "Dados inválidos",
+      result: {}
+    });
+  }
 };
 
 exports.deleteComment = (req, res, next) => {
-  res.status(200).json({
-    message: "Apagando comentário" + req.body.commentId
-  });
-};
-
-exports.addSupport = (req, res, next) => {
-  Issue.findById({ _id: req.params.issueId }, { voters: 1 })
+  Issue.updateOne(
+    { _id: req.params.issueId },
+    { $pull: { comments: { _id: req.body.commentId } } }
+  )
     .exec()
-    .then(result => {
-      Issue.updateOne(
-        { _id: req.params.issueId },
-        { $push: { voters: req.body.voter } }
-      )
-        .exec()
-        .then(result => {
-          res.status(200).json({
-            support: result,
-            message: "Adicionando um voto de suporte"
-          });
+    .then(updatedIssue => {
+      if (updatedIssue.nModified !== 0) {
+        res.status(200).json({
+          message: "Success",
+          updatedIssue
         });
+      } else {
+        res.status(400).json({ message: "Invalid ID" });
+      }
     })
     .catch(error => {
       res.status(500).json({
-        message: "Erro ao votar" + error
+        error: "erro ao apagar comentário" + error
       });
     });
 };
 
-exports.removeSupport = (req, res, next) => {
+/* controladores de votos */
+
+exports.addVote = (req, res, next) => {
+  const { voter } = req.body;
+
+  if (voter !== "" && voter !== undefined) {
+    Issue.findById({ _id: req.params.issueId }, { voters: 1 })
+      .exec()
+      .then(result => {
+        Issue.updateOne(
+          { _id: req.params.issueId },
+          { $push: { voters: voter } }
+        )
+          .exec()
+          .then(result => {
+            res.status(200).json({
+              support: result,
+              message: "Adicionando um voto de suporte"
+            });
+          });
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: "Erro ao votar" + error
+        });
+      });
+  } else {
+    res.status(400).json({
+      message: "Dados inválidos",
+      result: {}
+    });
+  }
+};
+
+exports.removeVote = (req, res, next) => {
   Issue.findById({ _id: req.params.issueId }, { voters: 1 })
     .exec()
     .then(result => {
