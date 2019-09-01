@@ -60,7 +60,7 @@ exports.postCategory = (req, res, next) => {
 
 exports.updateCategory = (req, res, next) => {
   const id = req.params.categoryId;
-  console.log("body", req.body);
+
   Category.updateOne({ _id: id }, { $set: { name: req.body.name } })
     .exec()
     .then(result => {

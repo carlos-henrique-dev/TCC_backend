@@ -90,7 +90,6 @@ exports.updateIssue = (req, res, next) => {
   Issue.updateOne({ _id: req.params.issueId }, { $set: updateOperations })
     .exec()
     .then(updatedIssue => {
-      console.log(updatedIssue);
       if (updatedIssue.nModified !== 0) {
         res.status(200).json({
           message: "Success",
@@ -128,6 +127,71 @@ exports.deleteIssue = async (req, res, next) => {
     .catch(error => {
       res.status(500).json({
         message: "Error trying to delete item" + error
+      });
+    });
+};
+
+exports.addComment = (req, res, next) => {
+  res.status(200).json({
+    message: "Adicionando comentário"
+  });
+};
+
+exports.deleteComment = (req, res, next) => {
+  res.status(200).json({
+    message: "Apagando comentário" + req.body.commentId
+  });
+};
+
+exports.addSupport = (req, res, next) => {
+  Issue.findById({ _id: req.params.issueId }, { voters: 1 })
+    .exec()
+    .then(result => {
+      Issue.updateOne(
+        { _id: req.params.issueId },
+        { $push: { voters: req.body.voter } }
+      )
+        .exec()
+        .then(result => {
+          res.status(200).json({
+            support: result,
+            message: "Adicionando um voto de suporte"
+          });
+        });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Erro ao votar" + error
+      });
+    });
+};
+
+exports.removeSupport = (req, res, next) => {
+  Issue.findById({ _id: req.params.issueId }, { voters: 1 })
+    .exec()
+    .then(result => {
+      if (result.voters.length > 0) {
+        Issue.updateOne(
+          { _id: req.params.issueId },
+          { $pull: { voters: { $in: [req.body.voter] } } }
+        )
+          .exec()
+          .then(result => {
+            res.status(200).json({
+              support: result,
+              message: "Retirado um voto de suporte"
+            });
+          });
+      } else {
+        res.status(200).json({
+          support: {},
+          message: "Nenhum voto para retirar"
+        });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Erro ao votar" + error
       });
     });
 };

@@ -24,7 +24,15 @@ const issueSchema = mongoose.Schema({
   longitude: { type: String, required: true },
   latitude: { type: String, required: true },
   description: { type: String, default: "" },
-  support: { type: Number, default: 1 },
+  voters: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
+    default: []
+  },
   comments: {
     type: [commentsSchema],
     default: []

@@ -41,12 +41,7 @@ module.exports = {
   limits: {
     fileSize: 10 * 1024 * 1024, // defiindo o tamanho maximo de cada imagem
     fileFilter: (req, file, callback) => {
-      const allowedMimes = [
-        "image/jpeg",
-        "image/pjpeg",
-        "image/png",
-        "image/gif"
-      ];
+      const allowedMimes = ["image/jpeg", "image/pjpeg", "image/png"];
 
       if (allowedMimes.includes(file.mimetype)) {
         callback(null, true);
