@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 module.exports = function(app) {
   // Conecta no MongoDB
   mongoose.connect(
-    /* config.mongoUrl */ "mongodb://localhost:27017/testimage",
+    config.mongoUrl /* "mongodb://localhost:27017/testimage" */,
     {
       useNewUrlParser: true,
       useCreateIndex: true
