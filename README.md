@@ -31,3 +31,11 @@
 | ---- | ---------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | POST | ../issues/support/add/{issueId}    | Adiciona um voto de apoio à uma publicação | No parâmetro deve ser enviado o **id** da publicação; <br/> E no body, o **id** do usuário que está votando: `{ voter: String }` |
 | POST | ../issues/support/remove/{issueId} | Remove um voto de apoio à uma publicação   | No parâmetro deve ser enviado o **id** da publicação; <br/> E no body, o **id** do usuário que está votando: `{ voter: String }` |
+
+
+## TODO
+- [ ] Rota para buscar postagens de uma categoria específica;
+- [ ] Alterar a imagem de uma postagem;
+- [ ] Aceitar array de imagens;
+- [ ] Rotas de perfil de usuário;
+- [ ] Rotas para gerar relatórios;

@@ -1,10 +1,6 @@
 const Image = require("../models/imagesModel");
 const Issue = require("../models/issuesModel");
 
-const fs = require("fs");
-const path = require("path");
-const { promisify } = require("util");
-
 exports.getIssues = async (req, res, next) => {
   Issue.find()
     .exec()
@@ -77,7 +73,10 @@ exports.postIssue = async (req, res, next) => {
         category,
         authorId,
         authorName,
-        images: image._id,
+        images: {
+          id: image._id,
+          url: image.url
+        },
         address,
         longitude,
         latitude,
