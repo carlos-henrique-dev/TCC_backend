@@ -35,7 +35,6 @@
 
 ## TODO
 - [x] Rota para buscar postagens de uma categoria específica;
-- [ ] Alterar a imagem de uma postagem;
 - [ ] Aceitar array de imagens;
 - [ ] Rotas de perfil de usuário;
 - [ ] Rotas para gerar relatórios;
