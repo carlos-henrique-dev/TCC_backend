@@ -26,4 +26,7 @@ router.delete("/comments/:issueId/", issuesController.deleteComment);
 router.post("/support/add/:issueId", issuesController.addVote);
 router.post("/support/remove/:issueId/", issuesController.removeVote);
 
+/* rota filtrar por categoria */
+router.get("/category/:categoryId", issuesController.findByCategory);
+
 module.exports = router;

@@ -300,3 +300,20 @@ exports.removeVote = (req, res, next) => {
       });
     });
 };
+
+exports.findByCategory = (req, res, next) => {
+  Issue.find({ category: req.params.categoryId })
+    .exec()
+    .then(issues => {
+      res.status(200).json({
+        message: "Success",
+        issues
+      });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Error",
+        error
+      });
+    });
+};
