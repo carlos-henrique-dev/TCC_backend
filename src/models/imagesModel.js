@@ -33,10 +33,11 @@ ImageSchema.pre("remove", function() {
       })
       .promise();
   } else {
-  }
+  
   return promisify(
     fs.unlink
   )(path.resolve(__dirname, "..", "..", "tmp", "uploads", this.key));
+  }
 });
 
 module.exports = mongoose.model("Image", ImageSchema);
