@@ -74,8 +74,9 @@ exports.postIssue = async (req, res, next) => {
         authorId,
         authorName,
         images: {
-          id: image._id,
-          url: image.url
+          _id: image._id,
+          url: image.url,
+          key: image.key
         },
         address,
         longitude,
@@ -168,7 +169,8 @@ exports.deleteIssue = async (req, res, next) => {
     })
     .catch(error => {
       res.status(500).json({
-        message: "Error trying to delete item" + error
+        message: "Error trying to delete item",
+        error: error.message
       });
     });
 };

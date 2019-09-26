@@ -20,8 +20,9 @@ const issueSchema = mongoose.Schema({
   authorName: { type: String, required: true },
   postedAt: { type: Date, default: Date.now() },
   images: {
-    id: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
-    url: { type: String, default: "" }
+    _id: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
+    url: { type: String, default: "" },
+    key: { type: String, default: "" }
   },
   address: { type: String, default: "" },
   longitude: { type: String, required: true },

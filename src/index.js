@@ -7,6 +7,7 @@ const path = require("path");
 const userRoutes = require("./routes/userRoutes");
 const issuesRoutes = require("./routes/issuesRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
+const reportsRoutes = require("./routes/reportsRoutes");
 
 app.use(bodyParser.json());
 
@@ -23,6 +24,7 @@ app.use(
 app.use("/user", userRoutes);
 app.use("/issues", issuesRoutes);
 app.use("/category", categoryRoutes);
+app.use("/reports", reportsRoutes);
 
 /*  tratando caminho inexistente */
 app.use((req, res, next) => {
