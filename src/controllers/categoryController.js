@@ -38,9 +38,12 @@ exports.getCategory = (req, res, next) => {
 };
 
 exports.postCategory = (req, res, next) => {
-  if (req.body.name !== "") {
+  const { name = "", code = "" } = req.body;
+
+  if (name !== "" && code !== "") {
     const category = new Category({
-      name: req.body.name
+      name,
+      code
     });
 
     category

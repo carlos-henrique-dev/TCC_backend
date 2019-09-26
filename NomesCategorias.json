@@ -1,0 +1,37 @@
+{
+  "count": 8,
+  "issues": [
+    {
+      "name": "Esgoto vazando",
+      "code": "ev"
+    },
+    {
+      "name": "Falta de Sinalização",
+      "code": "fs"
+    },
+    {
+      "name": "Buracos nas Ruas",
+      "code": "bs"
+    },
+    {
+      "name": "Despejo de Lixo ilegal",
+      "code": "dl"
+    },
+    {
+      "name": "Focos de dengue",
+      "code": "fd"
+    },
+    {
+      "name": "Alagamentos",
+      "code": "al"
+    },
+    {
+      "name": "Segurança",
+      "code": "se"
+    },
+    {
+      "name": "Animal perdido",
+      "code": "ap"
+    }
+  ]
+}

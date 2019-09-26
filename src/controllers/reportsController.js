@@ -8,7 +8,7 @@ exports.reportByCategory = (req, res, next) => {
       const report = [];
       for (item of categories) {
         const result = await Issue.countDocuments({
-          category: item._id
+          categoryId: item._id
         }).exec();
         report.push({
           category: item.name,

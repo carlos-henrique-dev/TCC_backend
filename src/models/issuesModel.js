@@ -7,26 +7,28 @@ const commentsSchema = mongoose.Schema({
 });
 
 const issueSchema = mongoose.Schema({
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-    required: true
-  },
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
   },
   authorName: { type: String, required: true },
-  postedAt: { type: Date, default: Date.now() },
   images: {
     _id: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
-    url: { type: String, default: "" },
-    key: { type: String, default: "" }
+    url: { type: String, required: true },
+    key: { type: String, required: true }
   },
-  address: { type: String, default: "" },
-  longitude: { type: String, required: true },
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true
+  },
+  postedAt: { type: Date, default: Date.now() },
+  street: { type: String, required: true },
+  neighborhood: { type: String, required: true },
+  city: { type: String, required: true },
   latitude: { type: String, required: true },
+  longitude: { type: String, required: true },
   description: { type: String, default: "" },
   voters: {
     type: [

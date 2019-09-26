@@ -46,22 +46,26 @@ exports.postIssue = async (req, res, next) => {
     const image = await Image.create({ name, size, key, url });
 
     const {
-      category,
       authorId,
       authorName,
-      address,
-      longitude,
+      categoryId,
+      street,
+      neighborhood,
+      city,
       latitude,
+      longitude,
       description
     } = req.body;
 
     if (
-      category === undefined ||
       authorId === undefined ||
       authorName === undefined ||
-      address === undefined ||
-      longitude === undefined ||
+      categoryId === undefined ||
+      street === undefined ||
+      neighborhood === undefined ||
+      city === undefined ||
       latitude === undefined ||
+      longitude === undefined ||
       description === undefined
     ) {
       await image.remove();
@@ -70,17 +74,19 @@ exports.postIssue = async (req, res, next) => {
       });
     } else {
       const issue = new Issue({
-        category,
         authorId,
         authorName,
+        categoryId,
         images: {
           _id: image._id,
           url: image.url,
           key: image.key
         },
-        address,
-        longitude,
+        street,
+        neighborhood,
+        city,
         latitude,
+        longitude,
         description
       });
 
