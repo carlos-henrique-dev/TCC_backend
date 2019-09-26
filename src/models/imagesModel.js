@@ -33,16 +33,9 @@ ImageSchema.pre("remove", function() {
       })
       .promise();
   } else {
-<<<<<<< HEAD
     return promisify(fs.unlink)(
       path.resolve(__dirname, "..", "..", "tmp", "uploads", this.key)
     );
-=======
-  
-  return promisify(
-    fs.unlink
-  )(path.resolve(__dirname, "..", "..", "tmp", "uploads", this.key));
->>>>>>> 8f94120321423cbd91ce44275660cc79c1ec490b
   }
 });
 
