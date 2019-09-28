@@ -27,8 +27,21 @@ const issueSchema = mongoose.Schema({
   street: { type: String, required: true },
   neighborhood: { type: String, required: true },
   city: { type: String, required: true },
-  latitude: { type: String, required: true },
-  longitude: { type: String, required: true },
+  location: {
+    index: { type: String, default: "2d" },
+    type: {
+      type: String,
+      default: "Point"
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
+  },
+  resolved: {
+    type: Boolean,
+    default: false
+  },
   description: { type: String, default: "" },
   voters: {
     type: [

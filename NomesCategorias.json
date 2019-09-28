@@ -2,36 +2,61 @@
   "count": 8,
   "issues": [
     {
-      "name": "Esgoto vazando",
-      "code": "ev"
+      "_id": "5d8d09ee653dce15b1664333",
+      "name": "Animal Perdido",
+      "code": "ap",
+      "__v": 0
     },
     {
+      "_id": "5d8d0a01653dce15b1664334",
+      "name": "Esgoto Vazando",
+      "code": "ev",
+      "__v": 0
+    },
+    {
+      "_id": "5d8d0a0e653dce15b1664335",
       "name": "Falta de Sinalização",
-      "code": "fs"
+      "code": "fs",
+      "__v": 0
     },
     {
+      "_id": "5d8d0a18653dce15b1664336",
       "name": "Buracos nas Ruas",
-      "code": "bs"
+      "code": "bs",
+      "__v": 0
     },
     {
+      "_id": "5d8d0a34653dce15b1664337",
       "name": "Despejo de Lixo ilegal",
-      "code": "dl"
+      "code": "dl",
+      "__v": 0
     },
     {
+      "_id": "5d8d0a41653dce15b1664338",
       "name": "Focos de dengue",
-      "code": "fd"
+      "code": "fd",
+      "__v": 0
     },
     {
+      "_id": "5d8d0a4b653dce15b1664339",
       "name": "Alagamentos",
-      "code": "al"
+      "code": "al",
+      "__v": 0
     },
     {
+      "_id": "5d8d0a76653dce15b166433a",
       "name": "Segurança",
-      "code": "se"
-    },
-    {
-      "name": "Animal perdido",
-      "code": "ap"
+      "code": "se",
+      "__v": 0
     }
   ]
 }
+
+/* 
+  coordenadas para pesquisa
+  ['-23.104354', '-55.231996'] => banco do brasil
+  ['-23.105510', '-55.231560'] => prefeitura
+  ['-23.104354', '-55.231996'] => banco do brasil
+  ['-23.104354', '-55.231996'] => banco do brasil
+
+*/

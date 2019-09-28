@@ -23,7 +23,11 @@ exports.userLogin = async (req, res, next) => {
       return res.status(400).json({ error: "Invalid password" });
     }
 
+    const { name, _id } = user._doc;
+
     return res.json({
+      name,
+      _id,
       token: user.generateToken({ ...user })
     });
   } catch (err) {
@@ -36,7 +40,7 @@ exports.userLogin = async (req, res, next) => {
     result:
 */
 exports.userSignup = async (req, res, next) => {
-  if (await User.findOne({email: req.body.email})) {
+  if (await User.findOne({ email: req.body.email })) {
     return res.status(409).json({ error: "Usuário já existente" });
   }
   const user = new User({

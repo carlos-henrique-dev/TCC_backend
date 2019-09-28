@@ -85,8 +85,9 @@ exports.postIssue = async (req, res, next) => {
         street,
         neighborhood,
         city,
-        latitude,
-        longitude,
+        location: {
+          coordinates: [longitude, latitude]
+        },
         description
       });
 
