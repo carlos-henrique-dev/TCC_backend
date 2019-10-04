@@ -7,7 +7,9 @@ exports.getIssues = async (req, res, next) => {
     .then(issues_list => {
       res.status(200).json({
         count: issues_list.length,
-        issues: issues_list
+        issues: issues_list.sort(
+          (item1, item2) => new Date(item2.postedAt - new Date(item1.postedAt))
+        )
       });
     })
     .catch(error => {
