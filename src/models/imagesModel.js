@@ -25,7 +25,7 @@ ImageSchema.pre("save", function() {
 });
 
 ImageSchema.pre("remove", function() {
-  if (process.env.STORAGE_TYPE === "s3") {
+  if (process.env.STORAGE_TYPES === "s3") {
     return s3
       .deleteObject({
         Bucket: process.env.AWS_BUCKET,

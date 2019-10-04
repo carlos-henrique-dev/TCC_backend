@@ -23,11 +23,7 @@ exports.userLogin = async (req, res, next) => {
       return res.status(400).json({ error: "Invalid password" });
     }
 
-    const { name, _id } = user._doc;
-
     return res.json({
-      name,
-      _id,
       token: user.generateToken({ ...user })
     });
   } catch (err) {

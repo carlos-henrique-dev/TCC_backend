@@ -37,7 +37,7 @@ const storageTypes = {
 
 module.exports = {
   dest: path.resolve(__dirname, "..", "..", "tmp", "uploads"),
-  storage: storageTypes[process.env.STORAGE_TYPE],
+  storage: storageTypes[process.env.STORAGE_TYPES],
   limits: {
     fileSize: 10 * 1024 * 1024, // defiindo o tamanho maximo de cada imagem
     fileFilter: (req, file, callback) => {

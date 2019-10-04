@@ -17,8 +17,8 @@ app.use(morgan("dev"));
 
 /* serve para liberar o acesso às fotos salvas localmente no ambiente de dev */
 app.use(
-  "/file",
-  express.static(path.resolve(__dirname, "...", "tmp", "uploads"))
+  "/files",
+  express.static(path.resolve(__dirname, "..", "tmp", "uploads"))
 );
 
 app.use("/user", userRoutes);

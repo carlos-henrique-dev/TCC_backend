@@ -45,34 +45,5 @@ exports.reportByCity = (req, res, next) => {
 };
 
 exports.reportByRegion = async (req, res, next) => {
-  const response = await Issue.countDocuments({
-    location: {
-      $nearSphere: {
-        $geometry: {
-          type: "Point",
-          coordinates: [-23.104354, -55.231996]
-        },
-        $minDistance: 0,
-        $maxDistance: 150
-      }
-    }
-  }).exec();
-
-  res.status(200).json(response);
-
-  /* query
-    .where("location")
-    .near({ center: [-23.104354, -55.231996] })
-    .exec()
-    .then(response => {
-      console.log(response);
-      res.status(200).json({
-        count: response.length,
-        response
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    }); */
+  res.status(200).json({ message: "Rota em desenvolvimento" });
 };

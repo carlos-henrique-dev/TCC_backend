@@ -14,8 +14,9 @@ server.use(app);
 /* definindo a porta de acesso
 já deixei o process.env.PORT pq o heroku dá uma porta diferente da 3003
 */
-const port = process.env.PORT || 3003;
 
-server.listen(port, "192.168.0.103", () =>
-  console.log(`ouvindo na porta ${port}...`)
+const port = process.env.PORT || 3003;
+server.listen(
+  port,
+  /* "192.168.0.103", */ () => console.log(`ouvindo na porta ${port}...`)
 );
