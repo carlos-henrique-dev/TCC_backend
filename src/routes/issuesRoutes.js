@@ -12,7 +12,7 @@ router.get("/:issueId", issuesController.getIssue);
 
 router.post(
   "/",
-  multer(multerConfig).single("file"),
+  multer(multerConfig).array("files", 3),
   issuesController.postIssue
 );
 router.patch("/:issueId", issuesController.updateIssue);

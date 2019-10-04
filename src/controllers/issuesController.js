@@ -42,10 +42,19 @@ exports.getIssue = (req, res, next) => {
 };
 
 exports.postIssue = async (req, res, next) => {
-  if (req.file !== undefined) {
-    const { originalname: name, size, key, location: url = "" } = req.file;
+  if (req.files !== undefined) {
+    const images = [];
 
-    const image = await Image.create({ name, size, key, url });
+    for (item of req.files) {
+      const { originalname: name, size, key, location: url = "" } = item;
+
+      const image = await Image.create({ name, size, key, url });
+      images.push(image);
+    }
+
+    //    const { originalname: name, size, key, location: url = "" } = req.file;
+
+    //  const image = await Image.create({ name, size, key, url });
 
     const {
       authorId,
@@ -70,7 +79,9 @@ exports.postIssue = async (req, res, next) => {
       longitude === undefined ||
       description === undefined
     ) {
-      await image.remove();
+      for (item of images) {
+        await item.remove();
+      }
       res.status(400).json({
         message: "Dados inválidos"
       });
@@ -79,11 +90,12 @@ exports.postIssue = async (req, res, next) => {
         authorId,
         authorName,
         categoryId,
-        images: {
+        /* images: {
           _id: image._id,
           url: image.url,
           key: image.key
-        },
+        }, */
+        images,
         street,
         neighborhood,
         city,

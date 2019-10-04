@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+// import ImageSchema from "./imagesModel";
 
 const commentsSchema = mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true },
@@ -13,11 +14,18 @@ const issueSchema = mongoose.Schema({
     required: true
   },
   authorName: { type: String, required: true },
-  images: {
+  /* images: {
     _id: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
     url: { type: String, required: true },
     key: { type: String, required: true }
-  },
+  }, */
+  images: [
+    {
+      _id: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
+      url: { type: String, required: true },
+      key: { type: String, required: true }
+    }
+  ],
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
