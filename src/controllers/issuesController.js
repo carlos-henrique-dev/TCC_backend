@@ -52,10 +52,6 @@ exports.postIssue = async (req, res, next) => {
       images.push(image);
     }
 
-    //    const { originalname: name, size, key, location: url = "" } = req.file;
-
-    //  const image = await Image.create({ name, size, key, url });
-
     const {
       authorId,
       authorName,
@@ -90,11 +86,6 @@ exports.postIssue = async (req, res, next) => {
         authorId,
         authorName,
         categoryId,
-        /* images: {
-          _id: image._id,
-          url: image.url,
-          key: image.key
-        }, */
         images,
         street,
         neighborhood,
