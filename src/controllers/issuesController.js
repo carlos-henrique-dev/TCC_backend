@@ -169,8 +169,10 @@ exports.deleteIssue = async (req, res, next) => {
   Issue.findById(req.params.issueId)
     .exec()
     .then(async result => {
-      const image = await Image.findById(result.images);
-      await image.remove();
+      for (image of result.images) {
+        const img = await Image.findById(image);
+        await img.remove();
+      }
 
       Issue.deleteOne({ _id: req.params.issueId })
         .exec()

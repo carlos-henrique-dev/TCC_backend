@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const Image = require("../models/imagesModel");
+const Issue = require("../models/issuesModel");
 
 // Carrega o model de Usuário
 require("../models/user");
@@ -79,7 +80,34 @@ exports.userSignup = async (req, res, next) => {
     Params: 
     result:
 */
-exports.userDelete = (req, res, next) => {};
+exports.userDelete = (req, res, next) => {
+  User.findById(req.params.userid)
+    .exec()
+    .then(user => {
+      Issue.find({ authorId: user._id })
+        .then(async issues => {
+          for (issue of issues) {
+            for (image of issue.images) {
+              const img = await Image.findById(image);
+              await img.remove();
+            }
+            Issue.deleteOne({ _id: issue._id }).exec();
+          }
+        })
+        .then(async () => {
+          const avatar = await Image.findById(user.avatar);
+          await avatar.remove();
+          User.deleteOne({ _id: user._id })
+            .exec()
+            .then(() => {
+              res.status(200).json({ message: "conta excluída com sucesso" });
+            });
+        });
+    })
+    .catch(error => {
+      res.status(500).json({ message: "erro ao excluir a conta" });
+    });
+};
 
 /* controle de atualização de perfil
     Params: 
