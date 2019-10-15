@@ -14,6 +14,10 @@ const issueSchema = mongoose.Schema({
     required: true
   },
   authorName: { type: String, required: true },
+  authorAvatar: {
+    type: String,
+    default: ""
+  },
   images: [
     {
       _id: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },

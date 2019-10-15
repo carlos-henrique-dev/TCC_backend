@@ -55,6 +55,7 @@ exports.postIssue = async (req, res, next) => {
     const {
       authorId,
       authorName,
+      authorAvatar,
       categoryId,
       street,
       neighborhood,
@@ -85,6 +86,7 @@ exports.postIssue = async (req, res, next) => {
       const issue = new Issue({
         authorId,
         authorName,
+        authorAvatar,
         categoryId,
         images,
         street,
