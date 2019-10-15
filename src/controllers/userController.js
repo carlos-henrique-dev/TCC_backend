@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const Image = require("../models/imagesModel");
+
 // Carrega o model de Usuário
 require("../models/user");
 
@@ -23,7 +25,11 @@ exports.userLogin = async (req, res, next) => {
       return res.status(400).json({ error: "Invalid password" });
     }
 
+    const { avatar, name, _id } = user;
     return res.json({
+      avatar,
+      name,
+      _id,
       token: user.generateToken({ ...user })
     });
   } catch (err) {
@@ -39,21 +45,24 @@ exports.userSignup = async (req, res, next) => {
   if (await User.findOne({ email: req.body.email })) {
     return res.status(409).json({ error: "Usuário já existente" });
   }
+
+  const { originalname: name, size, key, location: url = "" } = req.file;
+
+  const image = await Image.create({ name, size, key, url });
+
   const user = new User({
     name: req.body.name,
+    avatar: image,
     email: req.body.email,
     password: req.body.password
   });
   user
     .save()
     .then(result => {
-      console.log(result);
       res.status(201).json({
         message: "Conta criada com sucesso",
         createdUser: {
-          name: result.name,
-          email: req.body.email,
-          _id: result._id
+          result
         }
       });
     })

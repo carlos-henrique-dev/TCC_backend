@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const authMiddleware = require("../middlewares/auth");
 const userController = require("../controllers/userController");
 
+const multer = require("multer");
+const multerConfig = require("../config/multer");
+
 // Carrega o model de Usuário
 require("../models/user");
 
@@ -12,7 +15,11 @@ const User = mongoose.model("User");
 router.post("/login", userController.userLogin);
 
 /* rota de cadastro */
-router.post("/signup", userController.userSignup);
+router.post(
+  "/signup",
+  multer(multerConfig).single("avatar"),
+  userController.userSignup
+);
 
 /* rota de remoção de conta */
 router.delete("/:userid", userController.userLogin);
