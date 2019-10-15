@@ -22,10 +22,14 @@ router.post(
 );
 
 /* rota de remoção de conta */
-router.delete("/:userid", userController.userLogin);
+router.delete("/:userid", userController.userDelete);
 
 /* rota de atualização de perfil */
-router.patch("/userid", userController.userLogin);
+router.patch(
+  "/:userid",
+  multer(multerConfig).single("avatar"),
+  userController.userUpdate
+);
 
 router.use(authMiddleware);
 

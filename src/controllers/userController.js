@@ -47,6 +47,7 @@ exports.userSignup = async (req, res, next) => {
   }
 
   const { originalname: name, size, key, location: url = "" } = req.file;
+  console.log("file", req.file);
 
   const image = await Image.create({ name, size, key, url });
 
@@ -84,4 +85,48 @@ exports.userDelete = (req, res, next) => {};
     Params: 
     result:
 */
-exports.userUpdate = (req, res, next) => {};
+exports.userUpdate = async (req, res, next) => {
+  const { name = null } = req.body;
+  let avatar = null;
+  if (req.file !== undefined) {
+    const { originalname: name, size, key, location: url = "" } = req.file;
+    console.log("re file", req.file);
+    avatar = await Image.create({ name, size, key, url });
+  }
+
+  if (avatar === null && name === null) {
+    return res.status(400).json({ message: "Nenhum dado para atualizar" });
+  }
+
+  User.findById(req.params.userid)
+    .exec()
+    .then(async user => {
+      if (avatar !== null) {
+        const oldAvatar = await Image.findById(user.avatar);
+        await oldAvatar.remove();
+      }
+
+      const newUser = {};
+      if (avatar !== null) {
+        newUser.avatar = avatar;
+      }
+      if (name !== null) {
+        newUser["name"] = name;
+      }
+
+      User.updateOne({ _id: req.params.userid }, { $set: newUser })
+        .exec()
+        .then(result => {
+          res.status(200).json({
+            message: "usuário atualizado",
+            newUser
+          });
+        });
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: "Erro ao tentar atualizar o perfil",
+        err: err.message
+      });
+    });
+};
