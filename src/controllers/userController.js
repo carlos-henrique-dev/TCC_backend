@@ -26,11 +26,8 @@ exports.userLogin = async (req, res, next) => {
       return res.status(400).json({ error: "Invalid password" });
     }
 
-    const { avatar, name, _id } = user;
     return res.json({
-      avatar,
-      name,
-      _id,
+      user,
       token: user.generateToken({ ...user })
     });
   } catch (err) {
@@ -48,7 +45,6 @@ exports.userSignup = async (req, res, next) => {
   }
 
   const { originalname: name, size, key, location: url = "" } = req.file;
-  console.log("file", req.file);
 
   const image = await Image.create({ name, size, key, url });
 
@@ -63,9 +59,7 @@ exports.userSignup = async (req, res, next) => {
     .then(result => {
       res.status(201).json({
         message: "Conta criada com sucesso",
-        createdUser: {
-          result
-        }
+        createdUser: result
       });
     })
     .catch(err => {
@@ -118,7 +112,6 @@ exports.userUpdate = async (req, res, next) => {
   let avatar = null;
   if (req.file !== undefined) {
     const { originalname: name, size, key, location: url = "" } = req.file;
-    console.log("re file", req.file);
     avatar = await Image.create({ name, size, key, url });
   }
 

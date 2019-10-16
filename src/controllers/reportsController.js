@@ -1,6 +1,5 @@
 const Category = require("../models/categoryModel");
 const Issue = require("../models/issuesModel");
-const mongoose = require("mongoose");
 
 exports.reportByCategory = (req, res, next) => {
   Category.find()
@@ -11,8 +10,17 @@ exports.reportByCategory = (req, res, next) => {
         const result = await Issue.countDocuments({
           categoryId: item._id
         }).exec();
+
+        const issues = await Issue.find({ categoryId: item._id }).exec();
+
+        const issuesLocation = issues.map(issue => ({
+          latitude: issue.location.coordinates[0],
+          longitude: issue.location.coordinates[1]
+        }));
         report.push({
           category: item.name,
+          code: item.code,
+          issuesLocation,
           amount: result
         });
       }

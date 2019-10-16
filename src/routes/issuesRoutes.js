@@ -28,5 +28,7 @@ router.post("/support/remove/:issueId/", issuesController.removeVote);
 
 /* rota filtrar por categoria */
 router.get("/category/:categoryId", issuesController.findByCategory);
+/* rota filtrar por usuário */
+router.get("/user/:userId", issuesController.findByUser);
 
 module.exports = router;

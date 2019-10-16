@@ -335,3 +335,20 @@ exports.findByCategory = (req, res, next) => {
       });
     });
 };
+
+exports.findByUser = (req, res, next) => {
+  Issue.find({ authorId: req.params.userId })
+    .exec()
+    .then(issues => {
+      res.status(200).json({
+        message: "Success",
+        issues
+      });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Error",
+        error
+      });
+    });
+};
