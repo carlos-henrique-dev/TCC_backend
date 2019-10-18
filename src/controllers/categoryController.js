@@ -3,10 +3,10 @@ const Category = require("../models/categoryModel");
 exports.getCategories = (req, res, next) => {
   Category.find()
     .exec()
-    .then(issuesList => {
+    .then(categoriesList => {
       const response = {
-        count: issuesList.length,
-        issues: issuesList
+        count: categoriesList.length,
+        categories: categoriesList
       };
       res.status(200).json(response);
     })

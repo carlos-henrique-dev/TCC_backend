@@ -41,79 +41,83 @@ exports.getIssue = (req, res, next) => {
     });
 };
 
-exports.postIssue = async (req, res, next) => {
-  if (req.files !== undefined) {
-    const images = [];
+exports.postIssue = socket => {
+  return async (req, res, next) => {
+    if (req.files !== undefined) {
+      const images = [];
 
-    for (item of req.files) {
-      const { originalname: name, size, key, location: url = "" } = item;
+      for (item of req.files) {
+        const { originalname: name, size, key, location: url = "" } = item;
 
-      const image = await Image.create({ name, size, key, url });
-      images.push(image);
-    }
-
-    const {
-      authorId,
-      authorName,
-      authorAvatar,
-      categoryId,
-      street,
-      neighborhood,
-      city,
-      latitude,
-      longitude,
-      description
-    } = req.body;
-
-    if (
-      authorId === undefined ||
-      authorName === undefined ||
-      categoryId === undefined ||
-      street === undefined ||
-      neighborhood === undefined ||
-      city === undefined ||
-      latitude === undefined ||
-      longitude === undefined ||
-      description === undefined
-    ) {
-      for (item of images) {
-        await item.remove();
+        const image = await Image.create({ name, size, key, url });
+        images.push(image);
       }
-      res.status(400).json({
-        message: "Dados inválidos"
-      });
-    } else {
-      const issue = new Issue({
+
+      const {
         authorId,
         authorName,
         authorAvatar,
         categoryId,
-        images,
         street,
         neighborhood,
         city,
-        location: {
-          coordinates: [longitude, latitude]
-        },
+        latitude,
+        longitude,
         description
-      });
+      } = req.body;
 
-      issue
-        .save()
-        .then(result => {
-          res.status(200).json(result);
-        })
-        .catch(error => {
-          res.status(500).json({
-            error: "erro ao adicionar issue" + error
-          });
+      if (
+        authorId === undefined ||
+        authorName === undefined ||
+        categoryId === undefined ||
+        street === undefined ||
+        neighborhood === undefined ||
+        city === undefined ||
+        latitude === undefined ||
+        longitude === undefined ||
+        description === undefined
+      ) {
+        for (item of images) {
+          await item.remove();
+        }
+        res.status(400).json({
+          message: "Dados inválidos"
         });
+      } else {
+        const issue = new Issue({
+          authorId,
+          authorName,
+          authorAvatar,
+          categoryId,
+          images,
+          street,
+          neighborhood,
+          city,
+          location: {
+            coordinates: [longitude, latitude]
+          },
+          description
+        });
+
+        issue
+          .save()
+          .then(result => {
+            socket.emit("newissue", [result]);
+
+            res.status(200).json(result);
+          })
+          .catch(error => {
+            res.status(500).json({
+              error: "erro ao adicionar issue" + error
+            });
+          });
+      }
+    } else {
+      res.status(400).json({
+        message: "Arquivo inválidos"
+      });
     }
-  } else {
-    res.status(400).json({
-      message: "Arquivo inválidos"
-    });
-  }
+  };
 };
 
 /* 
@@ -165,30 +169,41 @@ exports.updateIssue = (req, res, next) => {
   }
 };
 
-exports.deleteIssue = async (req, res, next) => {
-  Issue.findById(req.params.issueId)
-    .exec()
-    .then(async result => {
-      for (image of result.images) {
-        const img = await Image.findById(image);
-        await img.remove();
-      }
+exports.deleteIssue = socket => {
+  console.log("a");
+  return async (req, res, next) => {
+    Issue.findById(req.params.issueId)
+      .exec()
+      .then(async result => {
+        for (image of result.images) {
+          const img = await Image.findById(image);
+          await img.remove();
+        }
 
-      Issue.deleteOne({ _id: req.params.issueId })
-        .exec()
-        .then(result => {
-          res.status(200).json({
-            message: "Success",
-            result
+        Issue.deleteOne({ _id: req.params.issueId })
+          .exec()
+          .then(() => {
+            Issue.find()
+              .exec()
+              .then(issues_list => {
+                socket.emit("issues", {
+                  count: issues_list.length,
+                  issues: issues_list.sort(
+                    (item1, item2) =>
+                      new Date(item2.postedAt - new Date(item1.postedAt))
+                  )
+                });
+                res.status(200).json({ message: "Post removido" });
+              });
           });
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: "Error trying to delete item",
+          error: error.message
         });
-    })
-    .catch(error => {
-      res.status(500).json({
-        message: "Error trying to delete item",
-        error: error.message
       });
-    });
+  };
 };
 
 /* controladores de comentários */
