@@ -1,19 +1,19 @@
-const Category = require("../models/categoryModel");
+const Category = require('../models/categoryModel');
 
 exports.getCategories = (req, res, next) => {
   Category.find()
     .exec()
-    .then(categoriesList => {
+    .then((categoriesList) => {
       const response = {
         count: categoriesList.length,
-        categories: categoriesList
+        categories: categoriesList,
       };
       res.status(200).json(response);
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        message: "Error while fetching the categories",
-        error: error
+        message: 'Error while fetching the categories',
+        error,
       });
     });
 };
@@ -23,73 +23,73 @@ exports.getCategory = (req, res, next) => {
 
   Category.findById(id)
     .exec()
-    .then(category => {
+    .then((category) => {
       res.status(200).json({
-        message: "Success",
-        category
+        message: 'Success',
+        category,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
         message: "Error! can't get the category",
-        error: error
+        error,
       });
     });
 };
 
 exports.postCategory = (req, res, next) => {
-  const { name = "", code = "" } = req.body;
+  const { name = '', code = '' } = req.body;
 
-  if (name !== "" && code !== "") {
+  if (name !== '' && code !== '') {
     const category = new Category({
       name,
-      code
+      code,
     });
 
     category
       .save()
-      .then(result => {
+      .then((result) => {
         res.status(200).json({
-          message: "Success",
-          result
+          message: 'Success',
+          result,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         res.status(500).json({
           message: "Couldn't add a new category",
-          result: {}
+          result: {},
         });
       });
   } else {
     res.status(400).json({
-      message: "Dados inválidos",
-      result: {}
+      message: 'Dados inválidos',
+      result: {},
     });
   }
 };
 
 exports.updateCategory = (req, res, next) => {
-  if (req.body.name !== "") {
+  if (req.body.name !== '') {
     const id = req.params.categoryId;
 
     Category.updateOne({ _id: id }, { $set: { name: req.body.name } })
       .exec()
-      .then(result => {
+      .then((result) => {
         res.status(200).json({
-          message: "Success!",
-          result
+          message: 'Success!',
+          result,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         res.status(500).json({
           message: "Couldn't update the category",
-          error
+          error,
         });
       });
   } else {
     res.status(400).json({
-      message: "Dados inválidos",
-      result: {}
+      message: 'Dados inválidos',
+      result: {},
     });
   }
 };
@@ -98,16 +98,16 @@ exports.deleteCategory = (req, res, next) => {
   const id = req.params.categoryId;
   Category.deleteOne({ _id: id })
     .exec()
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
-        message: "Success",
-        result
+        message: 'Success',
+        result,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
         message: "Error! can't delete category",
-        error: error
+        error,
       });
     });
 };

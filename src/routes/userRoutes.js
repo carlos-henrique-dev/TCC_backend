@@ -1,39 +1,31 @@
-const router = require("express").Router();
-const mongoose = require("mongoose");
-const authMiddleware = require("../middlewares/auth");
-const userController = require("../controllers/userController");
+const router = require('express').Router();
+const mongoose = require('mongoose');
+const multer = require('multer');
+const authMiddleware = require('../middlewares/auth');
+const userController = require('../controllers/userController');
 
-const multer = require("multer");
-const multerConfig = require("../config/multer");
+const multerConfig = require('../config/multer');
 
 // Carrega o model de Usuário
-require("../models/user");
+require('../models/user');
 
-const User = mongoose.model("User");
+const User = mongoose.model('User');
 
 /* rota de login */
-router.post("/login", userController.userLogin);
+router.post('/login', userController.userLogin);
 
 /* rota de cadastro */
-router.post(
-  "/signup",
-  multer(multerConfig).single("avatar"),
-  userController.userSignup
-);
+router.post('/signup', multer(multerConfig).single('avatar'), userController.userSignup);
 
 /* rota de remoção de conta */
-router.delete("/:userid", userController.userDelete);
+router.delete('/:userid', userController.userDelete);
 
 /* rota de atualização de perfil */
-router.patch(
-  "/:userid",
-  multer(multerConfig).single("avatar"),
-  userController.userUpdate
-);
+router.patch('/:userid', multer(multerConfig).single('avatar'), userController.userUpdate);
 
 router.use(authMiddleware);
 
-router.get("/me", async (req, res) => {
+router.get('/me', async (req, res) => {
   try {
     const { userId } = req;
 

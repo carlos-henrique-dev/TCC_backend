@@ -51,7 +51,10 @@ exports.postIssue = (socket) => async (req, res, next) => {
       } = item;
 
       const image = await Image.create({
-        name, size, key, url,
+        name,
+        size,
+        key,
+        url,
       });
       images.push(image);
     }
@@ -70,14 +73,14 @@ exports.postIssue = (socket) => async (req, res, next) => {
 
     if (
       authorId === undefined
-        || authorName === undefined
-        || categoryId === undefined
-        || street === undefined
-        || neighborhood === undefined
-        || city === undefined
-        || latitude === undefined
-        || longitude === undefined
-        || description === undefined
+      || authorName === undefined
+      || categoryId === undefined
+      || street === undefined
+      || neighborhood === undefined
+      || city === undefined
+      || latitude === undefined
+      || longitude === undefined
+      || description === undefined
     ) {
       for (item of images) {
         await item.remove();
