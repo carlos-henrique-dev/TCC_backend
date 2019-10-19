@@ -52,7 +52,6 @@ exports.postIssue = socket => {
         const image = await Image.create({ name, size, key, url });
         images.push(image);
       }
-
       const {
         authorId,
         authorName,
@@ -107,6 +106,7 @@ exports.postIssue = socket => {
             res.status(200).json(result);
           })
           .catch(error => {
+            console.log("erro", error.message);
             res.status(500).json({
               error: "erro ao adicionar issue" + error
             });
@@ -170,7 +170,6 @@ exports.updateIssue = (req, res, next) => {
 };
 
 exports.deleteIssue = socket => {
-  console.log("a");
   return async (req, res, next) => {
     Issue.findById(req.params.issueId)
       .exec()
@@ -186,7 +185,7 @@ exports.deleteIssue = socket => {
             Issue.find()
               .exec()
               .then(issues_list => {
-                socket.emit("issues", {
+                socket.emit("removeDeleted", {
                   count: issues_list.length,
                   issues: issues_list.sort(
                     (item1, item2) =>

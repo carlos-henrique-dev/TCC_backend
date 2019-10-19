@@ -25,6 +25,8 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "dotenv": "^8.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-react": "^7.14.3",
     "express": "^4.17.1",
     "http": "^0.0.0",
     "jsonwebtoken": "^8.5.1",
@@ -35,10 +37,11 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "eslint": "^6.2.2",
+    "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
     "nodemon": "^1.19.1"
   }
 }
