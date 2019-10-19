@@ -108,11 +108,9 @@ exports.postIssue = (socket) => async (req, res, next) => {
         .save()
         .then((result) => {
           socket.emit('newissue', [result]);
-
-          res.status(200).json(result);
+          res.status(200).json({ message: 'Post adicionado com sucesso' });
         })
         .catch((error) => {
-          console.log('erro', error.message);
           res.status(500).json({
             error: `erro ao adicionar issue${error}`,
           });
@@ -342,7 +340,7 @@ exports.findByUser = (req, res, next) => {
     .then((issues) => {
       res.status(200).json({
         message: 'Success',
-        issues,
+        issues: issues.sort((item1, item2) => new Date(item2.postedAt - new Date(item1.postedAt))),
       });
     })
     .catch((error) => {
