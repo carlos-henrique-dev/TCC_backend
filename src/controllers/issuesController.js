@@ -98,8 +98,9 @@ exports.postIssue = (socket) => async (req, res, next) => {
         street,
         neighborhood,
         city,
+        voters: [authorId],
         location: {
-          coordinates: [longitude, latitude],
+          coordinates: [latitude, longitude],
         },
         description,
       });
@@ -126,10 +127,10 @@ exports.postIssue = (socket) => async (req, res, next) => {
 /*
 atualiza a issue, a requisição deve seguir este modelo:
 [
-	{
-		"propName": "nome do campo a ser alterado",
-		"value": "valor que deverá substituir o atual"
-	}
+{
+"propName": "nome do campo a ser alterado",
+"value": "valor que deverá substituir o atual"
+}
 ]
 */
 exports.updateIssue = (req, res, next) => {
@@ -145,8 +146,7 @@ exports.updateIssue = (req, res, next) => {
         updateOperations[operations.propName] = operations.value;
       }
     }
-
-    Issue.updateOne({ _id: req.params.issueId }, { $set: updateOperations })
+    Issue.findByIdAndUpdate({ _id: req.params.issueId }, { $set: updateOperations }, { new: true })
       .exec()
       .then((updatedIssue) => {
         if (updatedIssue.nModified !== 0) {
@@ -197,7 +197,7 @@ exports.deleteIssue = (socket) => async (req, res, next) => {
 
 /* controladores de comentários */
 
-exports.addComment = (req, res, next) => {
+exports.addComment = (socket) => (req, res, next) => {
   const { userId, userName, comment } = req.body;
 
   if (
@@ -215,9 +215,9 @@ exports.addComment = (req, res, next) => {
       .exec()
       .then((updatedIssue) => {
         if (updatedIssue.nModified !== 0) {
+          socket.emit('newComment', { userName, userId, comment });
           res.status(200).json({
             message: 'Success',
-            updatedIssue,
           });
         } else {
           res.status(400).json({ message: 'Invalid ID' });

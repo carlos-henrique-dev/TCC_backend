@@ -1,38 +1,38 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const app = require("express")();
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
-const express = require("express");
-const path = require("path");
+const app = require('express')();
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const express = require('express');
+const path = require('path');
 
-const http = require("http").createServer(app);
-const socketio = require("socket.io")(http);
+const http = require('http').createServer(app);
+const socketio = require('socket.io')(http);
 
-const userRoutes = require("./src/routes/userRoutes");
-const issuesRoutes = require("./src/routes/issuesRoutes")(socketio);
-const categoryRoutes = require("./src/routes/categoryRoutes");
-const reportsRoutes = require("./src/routes/reportsRoutes");
+const userRoutes = require('./src/routes/userRoutes');
+const issuesRoutes = require('./src/routes/issuesRoutes')(socketio);
+const categoryRoutes = require('./src/routes/categoryRoutes');
+const reportsRoutes = require('./src/routes/reportsRoutes');
 
-const Issue = require("./src/models/issuesModel");
+const Issue = require('./src/models/issuesModel');
 
 app.use(bodyParser.json());
 
-require("./src/config/mongoose")(app);
+require('./src/config/mongoose')(app);
 
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 
 /* serve para liberar o acesso às fotos salvas localmente no ambiente de dev */
-app.use("/files", express.static(path.resolve(__dirname, "tmp", "uploads")));
+app.use('/files', express.static(path.resolve(__dirname, 'tmp', 'uploads')));
 
-app.use("/user", userRoutes);
-app.use("/issues", issuesRoutes);
-app.use("/category", categoryRoutes);
-app.use("/reports", reportsRoutes);
+app.use('/user', userRoutes);
+app.use('/issues', issuesRoutes);
+app.use('/category', categoryRoutes);
+app.use('/reports', reportsRoutes);
 
 /*  tratando caminho inexistente */
 app.use((req, res, next) => {
-  const error = new Error("Route not found");
+  const error = new Error('Route not found');
   error.status = 404;
   next(error);
 });
@@ -42,36 +42,33 @@ app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
     error: {
-      message: "Sorry, but we had an internal error: " + error.message
-    }
+      message: `Sorry, but we had an internal error: ${error.message}`,
+    },
   });
 });
 
-const sendIssues = socket => {
+const sendIssues = (socket) => {
   Issue.find()
     .exec()
-    .then(issues_list => {
-      socket.emit("issues", {
+    .then((issues_list) => {
+      socket.emit('issues', {
         count: issues_list.length,
         issues: issues_list.sort(
-          (item1, item2) => new Date(item2.postedAt - new Date(item1.postedAt))
-        )
+          (item1, item2) => new Date(item2.postedAt - new Date(item1.postedAt)),
+        ),
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({
-        error: "erro ao buscar issues" + error
+        error: `erro ao buscar issues${error}`,
       });
     });
 };
 
-socketio.on("connection", socket => {
-  console.log(`usuário ${socket.id} se conectou`);
-  sendIssues(socket);
+socketio.on('connection', (socket) => {
+  // sendIssues(socket);
 
-  socket.on("disconnect", () =>
-    console.log(`usuário ${socket.id} desconectou`)
-  );
+  socket.on('disconnect', () => console.log(`usuário ${socket.id} desconectou`));
 });
 
 const port = process.env.PORT || 3003;
