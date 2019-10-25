@@ -239,11 +239,11 @@ exports.addComment = (socket) => (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
   Issue.updateOne({ _id: req.params.issueId }, { $pull: { comments: { _id: req.body.commentId } } })
     .exec()
-    .then((updatedIssue) => {
-      if (updatedIssue.nModified !== 0) {
+    .then((updatedComment) => {
+      if (updatedComment.nModified !== 0) {
         res.status(200).json({
           message: 'Success',
-          updatedIssue,
+          updatedComment,
         });
       } else {
         res.status(400).json({ message: 'Invalid ID' });
