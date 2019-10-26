@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mailer = require('../config/mailer');
 
 const Image = require('../models/imagesModel');
 const Issue = require('../models/issuesModel');
@@ -180,4 +181,64 @@ exports.userUpdate = async (req, res, next) => {
         err: err.message,
       });
     });
+};
+
+exports.userForgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).send({ error: 'Usuário não encontrado' });
+
+    const token = Math.floor(100000 + Math.random() * 900000);
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+
+    await User.findOneAndUpdate(
+      { _id: user._id },
+      {
+        $set: {
+          passwordResetToken: token,
+          passwordResetExpires: now,
+        },
+      },
+    );
+
+    mailer.sendMail(
+      {
+        to: email,
+        from: 'henriqueok21@gmail.com',
+        template: 'auth/forgot',
+        context: { token },
+      },
+      (err) => {
+        if (err) {
+          return res.status(400).json({ error: 'Erro ao enviar o token de recuperação de senha' });
+        }
+        return res.send(200);
+      },
+    );
+  } catch (err) {
+    res.status(400).json({ error: 'Erro em esqueceu senha, tente novamente' });
+  }
+};
+
+exports.userResetPassword = async (req, res, next) => {
+  const { email, token, password } = req.body;
+  try {
+    const user = await User.findOne({ email }).select('+passwordResetToken passwordResetExpires');
+    if (!user) return res.status(400).send({ error: 'Usuário não encontrado' });
+
+    if (token !== user.passwordResetToken) return res.status(400).json({ error: 'Token Invalido' });
+
+    const now = new Date();
+    if (now > user.passwordResetExpires) return res.status(400).json({ error: 'Token expirado, gere um novo' });
+
+    user.password = password;
+
+    await user.save();
+
+    res.send(200);
+  } catch (err) {
+    res.status(400).json({ error: 'Erro ao resetar a senha, tente novamente' });
+  }
 };

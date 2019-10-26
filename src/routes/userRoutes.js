@@ -23,7 +23,10 @@ router.delete('/:userid', userController.userDelete);
 /* rota de atualização de perfil */
 router.patch('/:userid', multer(multerConfig).single('avatar'), userController.userUpdate);
 
-router.use(authMiddleware);
+router.post('/forgotPassword', userController.userForgotPassword);
+router.post('/resetPassword', userController.userResetPassword);
+
+// router.use(authMiddleware);
 
 router.get('/me', async (req, res) => {
   try {
