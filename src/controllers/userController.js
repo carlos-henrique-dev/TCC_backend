@@ -206,7 +206,7 @@ exports.userForgotPassword = async (req, res, next) => {
     mailer.sendMail(
       {
         to: email,
-        from: 'henriqueok21@gmail.com',
+        from: 'msalertatcc@gmail.com',
         template: 'auth/forgot',
         context: { token },
       },
