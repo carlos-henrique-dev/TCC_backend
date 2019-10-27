@@ -69,10 +69,21 @@ exports.postCategory = (req, res, next) => {
 };
 
 exports.updateCategory = (req, res, next) => {
-  if (req.body.name !== '') {
-    const id = req.params.categoryId;
+  if (req.body.length > 0) {
+    const updateOperations = {};
 
-    Category.updateOne({ _id: id }, { $set: { name: req.body.name } })
+    for (const operations of req.body) {
+      if (
+        operations.propName !== ''
+        && operations.propName !== undefined
+        && operations.value !== ''
+        && operations.value !== undefined
+      ) {
+        updateOperations[operations.propName] = operations.value;
+      }
+    }
+
+    Category.updateOne({ _id: id }, { $set: updateOperations })
       .exec()
       .then((result) => {
         res.status(200).json({
@@ -82,14 +93,13 @@ exports.updateCategory = (req, res, next) => {
       })
       .catch((error) => {
         res.status(500).json({
-          message: "Couldn't update the category",
+          message: 'Erro ao atualizar a cateoria',
           error,
         });
       });
   } else {
     res.status(400).json({
-      message: 'Dados inválidos',
-      result: {},
+      message: 'Nenhum campo para atualizar',
     });
   }
 };
