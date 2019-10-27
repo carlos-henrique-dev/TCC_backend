@@ -11,10 +11,6 @@ require('../models/user');
 
 const User = mongoose.model('User');
 
-/* controle de login
-    Params:
-    result:
-*/
 exports.userLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -38,10 +34,6 @@ exports.userLogin = async (req, res, next) => {
   }
 };
 
-/* controle de cadastro
-    Params:
-    result:
-*/
 exports.userSignup = async (req, res, next) => {
   if (await User.findOne({ email: req.body.email })) {
     return res.status(409).json({ error: 'Usuário já existente' });
@@ -89,10 +81,6 @@ exports.userSignup = async (req, res, next) => {
     });
 };
 
-/* controle de remoção de conta
-    Params:
-    result:
-*/
 exports.userDelete = (req, res, next) => {
   User.findById(req.params.userid)
     .exec()
@@ -122,10 +110,6 @@ exports.userDelete = (req, res, next) => {
     });
 };
 
-/* controle de atualização de perfil
-    Params:
-    result:
-*/
 exports.userUpdate = async (req, res, next) => {
   const { name = null, password = null } = req.body;
   let avatar = null;
