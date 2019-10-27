@@ -1,68 +1,67 @@
-const mongoose = require("mongoose");
-// import ImageSchema from "./imagesModel";
+const mongoose = require('mongoose');
 
 const commentsSchema = mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true },
   userName: { type: String, required: true },
-  comment: { type: String, required: true }
+  comment: { type: String, required: true },
 });
 
 const issueSchema = mongoose.Schema({
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+    ref: 'User',
+    required: true,
   },
   authorName: { type: String, required: true },
   authorAvatar: {
     type: String,
-    default: ""
+    default: '',
   },
   images: [
     {
-      _id: { type: mongoose.Schema.Types.ObjectId, ref: "Image" },
+      _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Image' },
       url: { type: String, required: true },
-      key: { type: String, required: true }
-    }
+      key: { type: String, required: true },
+    },
   ],
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-    required: true
+    ref: 'Category',
+    required: true,
   },
   postedAt: { type: Date, default: Date.now() },
   street: { type: String, required: true },
   neighborhood: { type: String, required: true },
   city: { type: String, required: true },
   location: {
-    index: { type: String, default: "2d" },
+    index: { type: String, default: '2d' },
     type: {
       type: String,
-      default: "Point"
+      default: 'Point',
     },
     coordinates: {
       type: [Number],
-      required: true
-    }
+      required: true,
+    },
   },
-  resolved: {
+  solved: {
     type: Boolean,
-    default: false
+    default: false,
   },
-  description: { type: String, default: "" },
+  description: { type: String, default: '' },
   voters: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-      }
+        ref: 'User',
+      },
     ],
-    default: []
+    default: [],
   },
   comments: {
     type: [commentsSchema],
-    default: []
-  }
+    default: [],
+  },
 });
 
-module.exports = mongoose.model("Issues", issueSchema);
+module.exports = mongoose.model('Issues', issueSchema);
