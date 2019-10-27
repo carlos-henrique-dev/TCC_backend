@@ -207,6 +207,7 @@ exports.userForgotPassword = async (req, res, next) => {
       {
         to: email,
         from: 'msalertatcc@gmail.com',
+        subject: 'Recuperação de senha',
         template: 'auth/forgot',
         context: { token },
       },
