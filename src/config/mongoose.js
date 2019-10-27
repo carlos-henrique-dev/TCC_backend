@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 module.exports = function (app) {
   // Conecta no MongoDB
-  mongoose.connect(process.env.MONGO_URL, {
+  mongoose.connect(process.env.MONGO_ATLAS_URL, {
     useNewUrlParser: true,
     useCreateIndex: true,
   });
