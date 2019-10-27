@@ -8,9 +8,9 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   avatar: {
-    _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Image' },
-    url: { type: String, required: true },
-    key: { type: String, required: true },
+    _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Image', default: null },
+    url: { type: String, default: '' },
+    key: { type: String, default: '' },
   },
   email: {
     type: String,

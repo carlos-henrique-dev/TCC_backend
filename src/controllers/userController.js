@@ -47,23 +47,33 @@ exports.userSignup = async (req, res, next) => {
     return res.status(409).json({ error: 'Usuário já existente' });
   }
 
-  const {
-    originalname: name, size, key, location: url = '',
-  } = req.file;
+  const fileData = {};
 
-  const image = await Image.create({
-    name,
-    size,
-    key,
-    url,
-  });
+  if (req.file !== undefined) {
+    fileData.name = req.file.originalname;
+    fileData.size = req.file.size;
+    fileData.key = req.file.key;
+    fileData.url = req.file.location;
+  }
 
-  const user = new User({
+  let image = null;
+  if (req.file !== undefined) {
+    image = await Image.create({
+      ...fileData,
+    });
+  }
+
+  const userData = {
     name: req.body.name,
-    avatar: image,
     email: req.body.email,
     password: req.body.password,
-  });
+  };
+
+  if (image !== null) {
+    userData.avatar = image;
+  }
+
+  const user = new User(userData);
   user
     .save()
     .then((result) => {
@@ -138,7 +148,7 @@ exports.userUpdate = async (req, res, next) => {
   User.findById(req.params.userid)
     .exec()
     .then(async (user) => {
-      if (avatar !== null) {
+      if (avatar !== null && user.avatar._id !== null) {
         const oldAvatar = await Image.findById(user.avatar);
         await oldAvatar.remove();
       }
