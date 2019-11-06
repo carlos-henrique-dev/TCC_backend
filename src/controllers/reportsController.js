@@ -23,6 +23,7 @@ exports.reportByCategory = (req, res, next) => {
         report.push({
           category: item.name,
           code: item.code,
+          id: item._id,
           issuesLocation,
           amount: result,
         });
