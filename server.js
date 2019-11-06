@@ -14,8 +14,6 @@ const issuesRoutes = require('./src/routes/issuesRoutes')(socketio);
 const categoryRoutes = require('./src/routes/categoryRoutes');
 const reportsRoutes = require('./src/routes/reportsRoutes');
 
-const Issue = require('./src/models/issuesModel');
-
 app.use(bodyParser.json());
 
 require('./src/config/mongoose')(app);
@@ -47,27 +45,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-const sendIssues = (socket) => {
-  Issue.find()
-    .exec()
-    .then((issues_list) => {
-      socket.emit('issues', {
-        count: issues_list.length,
-        issues: issues_list.sort(
-          (item1, item2) => new Date(item2.postedAt - new Date(item1.postedAt)),
-        ),
-      });
-    })
-    .catch((error) => {
-      res.status(500).json({
-        error: `erro ao buscar issues${error}`,
-      });
-    });
-};
-
 socketio.on('connection', (socket) => {
-  // sendIssues(socket);
-
   socket.on('disconnect', () => console.log(`usuário ${socket.id} desconectou`));
 });
 

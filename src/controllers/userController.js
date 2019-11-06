@@ -96,8 +96,10 @@ exports.userDelete = (req, res, next) => {
           }
         })
         .then(async () => {
-          const avatar = await Image.findById(user.avatar);
-          await avatar.remove();
+          if (user.avatar.id !== null) {
+            const avatar = await Image.findById(user.avatar);
+            await avatar.remove();
+          }
           User.deleteOne({ _id: user._id })
             .exec()
             .then(() => {
