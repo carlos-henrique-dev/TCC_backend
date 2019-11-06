@@ -14,8 +14,11 @@ exports.reportByCategory = (req, res, next) => {
         const issues = await Issue.find({ categoryId: item._id }).exec();
 
         const issuesLocation = issues.map((issue) => ({
-          latitude: issue.location.coordinates[0],
-          longitude: issue.location.coordinates[1],
+          issueId: issue._id,
+          coords: {
+            latitude: issue.location.coordinates[0],
+            longitude: issue.location.coordinates[1],
+          },
         }));
         report.push({
           category: item.name,
