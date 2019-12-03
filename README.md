@@ -1,45 +1,91 @@
-# Rotas de categorias
+# Descrição
+  Repositório do backend do aplicativo <b>MS Alerta</b>
 
-| Tipo   | Rota                      | Descrição                               | Parâmetros          |
-| ------ | ------------------------- | --------------------------------------- | ------------------- |
-| GET    | .../category/             | Retorna todas as categorias cadastradas | nenhum              |
-| GET    | .../category/{categoryId} | Retorna uma categoria específica        | `{id}` da categoria |
-| POST   | .../category/             | Cadastra uma categoria nova             | `{ name: String }`  |
-| PATCH  | .../category/{categoryId} | Altera o nome da categoria              | `{ name: "value" }` |
-| DELETE | .../category/{categoryId} | Remove uma categoria                    | `{id}` da categoria |
+  O projeto foi desenvolvido com node na versão 10.16.3
 
-# Rotas de problemas
+  Abaixo estão algumas instruções para instalação e uma breve documentação das rotas disponíveis
 
-| Tipo   | Rota                 | Descrição                             | Parâmetros                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| ------ | -------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| GET    | .../issues/          | Retorna todos os problemas publicados | nenhum                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| GET    | .../issues/{issueId} | Retorna um problema específico        | `{id}` do problema                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| POST   | .../issues/          | Posta um problema novo                | Deve ser enviado usando Multipart form: (todos os parâmetros são obrigatórios) <br/> `{` <br/> `"file": tipo => imagem.jpg / imagem.pjpeg / image.png,` <br /> `"category": tipo => String "id da categoria em que o problema se enquadra",` <br /> `"authorId": tipo => String "id do autor da postagem",` <br /> `"authorName": tipo => String "nome do autor da postagem",` <br /> `"address": tipo => String "endereço onde foi tirada a foto",` <br /> `"longitude": tipo => String "longitude do problema",` <br/> `"latitude": tipo => String "latitude do problema",` <br/> `"description": tipo => String "descrição do problema"` <br /> `}` |
-| PATCH  | .../issues/{issueId} | Edita o problema                      | No parâmetro deve ser enviado **id** do problema <br /> E no corpo da requisição deve ser enviado um array de objetos, e cada objeto deve conter o nome da propriedade que será alterada e o novo valor: <br /> Ex: `[ { propName: "description, value: "Nova descrição" } ]`                                                                                                                                                                                                                                                                                                                                                                          |
-| DELETE | .../issues/{issueId} | Remove uma categoria                  | `{id}` do problema                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+## Instruções de uso
 
-# Rotas de comentários
+para instalar as dependências, utilize o comando: ```yarn``` na raiz do projeto
 
-| Tipo   | Rota                         | Descrição                                      | Parâmetros                                                                                                                                                                                                       |
-| ------ | ---------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | ../issues/comments/{issueId} | Adiciona um comentário na postagem selecionada | No parâmetro deve ser enviado o **id** do problema; <br/> No body deve ser enviado o seguinte objeto: <br/> `{ userID: String, userName: String, comment: String }` <br/> (todos os parâmetros são obrigatórios) |
-| DELETE | ../issues/comments/{issueId} | Remove um comentário na postagem               | No parâmetro deve ser enviado o **id** do problema; <br/> No body deve ser enviado o **id** do comentário que será excluído: <br/> `{ commentId: String }`                                                       |
+e para rodar, utilize o comando: ```npm run dev```
 
-# Rotas para votação
+o sistema utiliza algumas variáveis de ambiente, para adicioná-las crie um arquivo ```.env``` na raiz do sistema e insira os valores abaixo:
 
-| Tipo | Rota                               | Descrição                                  | Parâmetros                                                                                                                       |
-| ---- | ---------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| POST | ../issues/support/add/{issueId}    | Adiciona um voto de apoio à uma publicação | No parâmetro deve ser enviado o **id** da publicação; <br/> E no body, o **id** do usuário que está votando: `{ voter: String }` |
-| POST | ../issues/support/remove/{issueId} | Remove um voto de apoio à uma publicação   | No parâmetro deve ser enviado o **id** da publicação; <br/> E no body, o **id** do usuário que está votando: `{ voter: String }` |
+NODE_ENV="ambiente do sistema <b>development</b> ou <b>production</b> <br>
 
-# Rotas de filtros
+STORAGE_TYPES="tipo de armazenamento. <b>local</b> para salvar imagens na pasta tmp ou <b>s3</b> para salvar na aws <br>
+AWS_BUCKET="nome do bucket na amazon s3" <br>
+AWS_ACCESS_KEY_ID="id de acesso" <br>
+AWS_SECRET_ACCESS_KEY="chave de acesso ao bucket" <br>
+AWS_DEFAULT_REGION="região do bucket. ex: us-east-2" <br>
 
-| Tipo | Rota                             | Descrição                                                             | Parâmetros                   |
-| ---- | -------------------------------- | --------------------------------------------------------------------- | ---------------------------- |
-| GET  | .../issues/category/{categoryId} | Retorna um array com as postagens que pertencem à categoria informada | `{id}` da categoria desejada |
+MONGO_URL="sua url do mongoDB local" <br>****
+MONGO_ATLAS_URL="sua url no mongo atlas" <br>
 
-## TODO
-- [x] Rota para buscar postagens de uma categoria específica;
-- [ ] Aceitar array de imagens;
-- [ ] Rotas de perfil de usuário;
-- [ ] Rotas para gerar relatórios;
+---
+
+## Rotas
+
+### Usuário
+
+|  Tipo  | Rota  | Descrição | Parâmetros |
+| ------------ | ------------ | ------------ | ------------ |
+| ```POST```  |  .../user/signup | Cria uma conta  | <b>Multipart form</b> <br/># name: string <br/> avatar: arquivo (jpeg/pjpeg/png) <br/># email: string <br/># password: string <br/><br/>  |
+| ```POST```  | .../user/login  |  Faz o login  |  <b>json:</b>  { <br/># "email": "string",<br/> # "password": "string"<br/>}  <br/><br/> |
+| ```PATCH```  | .../user/:id  | Atualiza o perfil  | ```#  :id = _id do usuário na url ``` <br/>  <b>Multipart form</b> <br/> name: string <br/> avatar: arquivo (jpeg/pjpeg/png) <br/> password: string <br/>  |
+| ```DELETE```  | .../user/:id  | Deleta a conta  | ```#  :id = _id do usuário na url ```  |
+| ```POST```  | .../user/forgotPassword  | Solicita alteração de senha  | <b>json:</b>  { # "email": "string", }   |
+| ```POST```  | .../user/resetPassword  | Envia o token e a senha nova  |  <b>json:</b>  { <br/># "email": "string",<br/># "token": number,<br/># "password": "string"<br/>} <br/><br/> *o token é recebido no e-mail informado na rota "forgotPassword" |
+
+campos marcados com # são obrigatórios                                                                                                                                                                                                                                                                                                   
+
+### Categorias
+
+|  Tipo  | Rota  | Descrição | Parâmetros |
+| ------------ | ------------ | ------------ | ------------ |
+| ```POST```  |  .../category | Cria uma categoria  | <b>json:</b>  {<br/> # "name": "string", <br/> #"code": "string"  }  <br/> *code é a abreviatura da categoria |
+| ```PATCH```  | .../category/:id  | Atualiza a categoria  | ```#  :id = _id da categoria na url ``` <br/> <b>json:</b> [ <br/> {<br/> # "propName": "string", <br/> #"value": "string"  } <br/> ] <br/> *ex : [ { propName: code, value: novoCode } ]  |
+| ```DELETE```  | .../category/:id  | Deleta a categoria  | ```#  :id = _id da categoria na url ```  |
+| ```GET```  |  .../category/:id  | Busca uma categoria  | ```#  :id = _id da categoria na url ```  |
+| ```GET```  | .../category  | Busca todas as categorias  |  nenhum |
+
+campos marcados com # são obrigatórios
+
+### Problemas
+
+|  Tipo  | Rota  | Descrição | Parâmetros |
+| ------------ | ------------ | ------------ | ------------ |
+| ```POST```  |  .../issues | Cria uma publicação  | <b>Multipart form</b> <br/># authorId: string <br/># authorName: string <br/> authorAvatar: string <br/> # files: arquivo (jpeg/pjpeg/png) <br/>files: arquivo (jpeg/pjpeg/png) <br/>files: arquivo (jpeg/pjpeg/png) <br/># categoryId: string <br/># street: string<br/># neighborhood: string<br/># city: string<br/># longitude: string<br/># latitude: string<br/># description: string <br/><br/> *pelo menos uma foto é necessária. no máximo 3 fotos  |
+| ```PATCH```  | .../issues/:id  | Atualiza a publicação  | ```#  :id = _id da publicação na url ``` <br/> <b>json:</b> [ <br/> {<br/> # "propName": "string", <br/> # "value": "string" <br/>  } <br/> ] <br/> *ex : [ { propName: description, value: novaDescrição } ]  |
+| ```DELETE```  | .../issues/:id  | Deleta a publicação  | ```#  :id = _id da publicação na url ```  |
+| ```GET```  | .../issues  | Busca todas as pulicações  | nenhum   |
+| ```GET```  |  .../issues/:id  | Busca uma publicação  | ```#  :id = _id da publicação na url ```  |
+| ```GET```  |  .../issues/user/:id  | Busca publicações de um usuário  | ```#  :id = _id de um usuário na url ```  |
+| ```GET```  |  .../issues/category/:id  | Busca publicações de uma categoria  | ```#  :id = _id de uma categoria na url ```  |
+
+##### Comentários nos problemas
+|  Tipo  | Rota  | Descrição | Parâmetros |
+| ------------ | ------------ | ------------ | ------------ |
+| ```POST```  |  .../issues/comments/:id | Cria uma categoria  |  ```#  :id = _id da publicação na url ``` <br/> <b>json:</b>  {<br/> # "userId": "string", <br/> #"userName": "string", <br/> #"comment": "string"  }  <br/>  |
+| ```DELETE```  | .../issues/comments/:id  | Deleta o comentário  | ```#  :id = _id da publicação na url ```  <br/> <b>json:</b>  { # "commentId": "string",  }  |
+
+##### Apoio aos problemas
+|  Tipo  | Rota  | Descrição | Parâmetros |
+| ------------ | ------------ | ------------ | ------------ |
+| ```POST```  |  .../issues/support/add/:id | Apoia a publicação  |  ```#  :id = _id da publicação na url ``` <br/> <b>json:</b>  {<br/> # "voter": "string" <br/>  *voter recebe o id do usuário que está apoiando }  <br/> |
+| ```POST```  | .../issues/suport/remove/:id  | Retira o apoio  |  ```#  :id = _id da publicação na url ``` <br/> <b>json:</b>  {<br/> # "voter": "string" <br/>  *voter recebe o id do usuário que está apoiando }  <br/>   |
+
+campos marcados com # são obrigatórios
+
+
+### Relatórios
+
+|  Tipo  | Rota  | Descrição | Parâmetros |
+| ------------ | ------------ | ------------ | ------------ |
+| ```GET```  |  .../reports/byCategory  | busca um relatório das publicaçÕes  | nenhum |
+
+<br/><br/><br/><br/><br/>
+###### Obs:
+  Para compreender melhor as rotas, abra o arquivo routes.json no software <b>Insomnia REST client</b> 
